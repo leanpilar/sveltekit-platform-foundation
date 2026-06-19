@@ -23,9 +23,14 @@ Performance metrics are programmatically enforced via automated checking pipelin
 ## Getting Started
 
 ### Prerequisites
-* Node.js v24.x or higher
-* npm v11.x or higher
+* Node.js v24.17 or higher
+* npm v11.13 or higher
 
 ### Installation
 ```bash
 npm install
+```
+### Dev run
+```bash
+npm run dev
+```
