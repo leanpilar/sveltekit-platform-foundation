@@ -7,5 +7,5 @@ export const config: Config = {
 };
 
 export const load: LayoutServerLoad = async () => {
-	return {}
-}
+	return {};
+};

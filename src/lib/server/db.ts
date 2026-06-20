@@ -1,7 +1,7 @@
 import { createClient } from 'redis';
 import { env } from '$env/dynamic/private';
 import { logger as myLogger } from '$lib';
-import items from "$lib/mocks/items.json"
+import items from '$lib/mocks/items.json';
 import posts from '$lib/mocks/posts.json';
 import tags from '$lib/mocks/tags.json';
 import users from '$lib/mocks/users.json';
@@ -10,7 +10,6 @@ interface MemoryClient {
 	get(key: string): Promise<string | null>;
 	set(key: string, value: string): Promise<unknown>;
 }
-
 
 class Client {
 	LOCAL_MEMORY_DB: Record<string, string | null> = {
@@ -37,7 +36,7 @@ class Client {
 			this.redisClient = createClient({ url: env.SV_KIT_PF_REDIS_VERCEL_REDIS_URL });
 			this.redisClient.connect().catch((err) => console.error('Redis Connection Error', err));
 			this.logger.log('redisClient initialized');
-			return
+			return;
 		}
 
 		this.logger.log('memoryClient initialized');
@@ -65,7 +64,6 @@ class Client {
 		this.setValue('posts', JSON.stringify(posts));
 		this.setValue('tags', JSON.stringify(tags));
 		this.setValue('users', JSON.stringify(users));
-
 	}
 
 	clearAllData() {
@@ -103,8 +101,7 @@ class Client {
 	}
 	seedData() {
 		this.seedInitialState();
-	};
+	}
 }
-
 
 export const persistance = new Client();
