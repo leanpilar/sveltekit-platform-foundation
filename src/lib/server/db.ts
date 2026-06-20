@@ -40,6 +40,9 @@ class Client {
 		}
 
 		this.logger.log('memoryClient initialized');
+		if (process.env.CI) {
+			this.seedInitialState();
+		}
 	}
 	/**
 	 * Resolves the operational client instance based on the active provider strategy
