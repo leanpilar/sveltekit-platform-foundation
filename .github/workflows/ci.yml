@@ -37,5 +37,8 @@ jobs:
       - name: Compile Production Build & Verify Size Budgets
         run: npm run build
 
+      - name: Verify Bundle Size Budgets & Performance Metrics
+        run: npm run size
+
       - name: Execute E2E Integration & Automated Accessibility Scans
         run: npm run test:e2e
