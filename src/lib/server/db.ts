@@ -45,6 +45,26 @@ class Client {
 		}
 	}
 	/**
+	 * Resolves active connection states and reconnects dead sockets during serverless lifecycles
+	 */
+	private async ensureConnected(): Promise<void> {
+		if (!this.redisClient) return;
+
+		if (!this.redisClient.isOpen) {
+			await this.redisClient.connect();
+			return;
+		}
+
+		// Ping the socket to verify the frozen connection is still alive
+		try {
+			await this.redisClient.ping();
+		} catch {
+			this.logger.warn('Redis socket dead on container wakeup, executing reconnect');
+			await this.redisClient.disconnect().catch(() => {});
+			await this.redisClient.connect();
+		}
+	}
+	/**
 	 * Resolves the operational client instance based on the active provider strategy
 	 */
 	getClient(): MemoryClient {
@@ -53,8 +73,14 @@ class Client {
 		}
 
 		return {
-			get: (key) => this.redisClient!.get(key),
-			set: (key, value) => this.redisClient!.set(key, value)
+			get: async (key) => {
+				await this.ensureConnected();
+				return this.redisClient!.get(key);
+			},
+			set: async (key, value) => {
+				await this.ensureConnected();
+				return this.redisClient!.set(key, value);
+			}
 		};
 	}
 
