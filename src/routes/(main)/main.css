@@ -1,0 +1,5 @@
+@import '../../app.css';
+
+@plugin '@tailwindcss/typography';
+
+/* Custom public elements */

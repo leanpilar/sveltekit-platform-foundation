@@ -1,0 +1,41 @@
+name: Continuous Integration Gatekeeper
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Initialize Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Exact Dependencies
+        run: npm ci
+
+      - name: Execute Static Linting & Formatting Audits
+        run: npm run lint
+
+      - name: Verify TypeScript Compilation Integrity
+        run: npm run check
+
+      - name: Install Playwright Browser Engines
+        run: npx playwright install --with-deps
+
+      - name: Execute Functional Unit Testing Suite
+        run: npm run test:unit
+
+      - name: Compile Production Build & Verify Size Budgets
+        run: npm run build
+
+      - name: Execute E2E Integration & Automated Accessibility Scans
+        run: npm run test:e2e

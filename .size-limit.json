@@ -1,0 +1,12 @@
+[
+	{
+		"path": ".svelte-kit/output/client/_app/immutable/entry/start.*.js",
+		"limit": "80 kB",
+		"gzip": true
+	},
+	{
+		"path": ".svelte-kit/output/client/_app/immutable/chunks/*.js",
+		"limit": "150 kB",
+		"gzip": true
+	}
+]

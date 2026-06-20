@@ -37,13 +37,22 @@ export default defineConfig(
 		// Override or add rule settings here, such as:
 		// 'svelte/button-has-type': 'error'
 		rules: {
-
+			'svelte/button-has-type': 'error',
+			'@typescript-eslint/no-explicit-any': [
+				'error',
+				{
+					fixToUnknown: false,
+					ignoreRestArgs: false
+				}
+			],
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_'
+				}
+			]
 		},
-		ignores: [
-			'.svelte-kit/',
-			'dist/',
-			'build/',
-			'node_modules/'
-		]
+		ignores: ['.svelte-kit/', 'dist/', 'build/', 'node_modules/']
 	}
 );
