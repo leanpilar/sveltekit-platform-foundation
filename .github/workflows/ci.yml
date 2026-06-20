@@ -26,6 +26,14 @@ jobs:
         run: npm run lint
 
       - name: Verify TypeScript Compilation Integrity
+        run: npm run prepare
+        env:
+          PRIVATE_JWT_SECRET: 'ci_runtime_placeholder_value'
+          DATABASE_PROVIDER: 'memory'
+          PUBLIC_DEBUG: 'false'
+          SV_KIT_PF_REDIS_VERCEL_REDIS_URL: ''
+
+      - name: Verify TypeScript Compilation Integrity
         run: npm run check
 
       - name: Install Playwright Browser Engines
