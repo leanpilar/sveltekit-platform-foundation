@@ -1,0 +1,110 @@
+import { createClient } from 'redis';
+import { env } from '$env/dynamic/private';
+import { logger as myLogger } from '$lib';
+import items from "$lib/mocks/items.json"
+import posts from '$lib/mocks/posts.json';
+import tags from '$lib/mocks/tags.json';
+import users from '$lib/mocks/users.json';
+
+interface MemoryClient {
+	get(key: string): Promise<string | null>;
+	set(key: string, value: string): Promise<unknown>;
+}
+
+
+class Client {
+	LOCAL_MEMORY_DB: Record<string, string | null> = {
+		item: 'Mock Local Cache Integrity Item'
+	};
+	redisClient: ReturnType<typeof createClient> | null = null;
+
+	memoryClient: MemoryClient = {
+		get: async (key: string): Promise<string | null> => this.LOCAL_MEMORY_DB[key] || null,
+		set: async (key: string, value: string | null) => {
+			this.LOCAL_MEMORY_DB[key] = value;
+		}
+	};
+
+	/**
+	 * @param logger - Application utility logger instance
+	 * @param PROVIDER - Active infrastructure driver selection target
+	 */
+	constructor(
+		private logger = myLogger,
+		private PROVIDER = env.DATABASE_PROVIDER || 'memory'
+	) {
+		if (PROVIDER === 'redis' && env.SV_KIT_PF_REDIS_VERCEL_REDIS_URL) {
+			this.redisClient = createClient({ url: env.SV_KIT_PF_REDIS_VERCEL_REDIS_URL });
+			this.redisClient.connect().catch((err) => console.error('Redis Connection Error', err));
+			this.logger.log('redisClient initialized');
+			return
+		}
+
+		this.logger.log('memoryClient initialized');
+	}
+	/**
+	 * Resolves the operational client instance based on the active provider strategy
+	 */
+	getClient(): MemoryClient {
+		if (this.PROVIDER === 'memory' || !this.redisClient) {
+			return this.memoryClient;
+		}
+
+		return {
+			get: (key) => this.redisClient!.get(key),
+			set: (key, value) => this.redisClient!.set(key, value)
+		};
+	}
+
+	/**
+	 * Hydrates the database state with base dataset allocations from local mocks
+	 */
+	private async seedInitialState(): Promise<void> {
+		this.clearAllData();
+		this.setValue('items', JSON.stringify(items));
+		this.setValue('posts', JSON.stringify(posts));
+		this.setValue('tags', JSON.stringify(tags));
+		this.setValue('users', JSON.stringify(users));
+
+	}
+
+	clearAllData() {
+		if (this.PROVIDER === 'memory' || !this.redisClient) {
+			this.LOCAL_MEMORY_DB = {};
+			return;
+		}
+		this.redisClient.flushDb();
+	}
+	/**
+	 * Fetches string payloads by their unique key identification coordinates
+	 */
+	private async getValue(key: string): Promise<string | null> {
+		const client = this.getClient();
+		return client.get(key);
+	}
+	/**
+	 * Commits primitive string values to the designated storage client boundary
+	 */
+	private async setValue(key: string, value: string): Promise<unknown> {
+		const client = this.getClient();
+		return client.set(key, value);
+	}
+	/**
+	 * Alias wrapper for retrieving item values
+	 */
+	get(key: string) {
+		return this.getValue(key);
+	}
+	/**
+	 * Alias wrapper for committing item values
+	 */
+	set(key: string, value: string) {
+		return this.setValue(key, value);
+	}
+	seedData() {
+		this.seedInitialState();
+	};
+}
+
+
+export const persistance = new Client();

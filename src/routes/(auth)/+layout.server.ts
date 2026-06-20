@@ -9,6 +9,7 @@ export const config: Config = {
 };
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
+
 	const session = cookies.get('session_id');
 	if (!session) {
 		throw redirect(302, '/login');
