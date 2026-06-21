@@ -1,4 +1,4 @@
-import { persistance } from '$lib';
+import { persistance } from './db';
 
 type AllDataTypes = 'items' | 'posts' | 'tags' | 'users';
 

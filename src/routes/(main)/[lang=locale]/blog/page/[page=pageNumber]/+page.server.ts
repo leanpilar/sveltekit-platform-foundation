@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { getAll } from '$lib';
+import { getAll } from '$lib/server/data-model';
 import type { BlogPost } from '$lib/server/dto';
 
 export const load: PageServerLoad = async ({ parent, params }) => {

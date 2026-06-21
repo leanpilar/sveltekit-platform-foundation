@@ -1,6 +1,6 @@
 import { createClient } from 'redis';
 import { env } from '$env/dynamic/private';
-import { logger as myLogger } from '$lib';
+import { logger as myLogger } from '../utility/logger';
 import items from '$lib/mocks/items.json';
 import posts from '$lib/mocks/posts.json';
 import tags from '$lib/mocks/tags.json';
