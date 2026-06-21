@@ -30,23 +30,80 @@ jobs:
       - name: Execute Static Linting & Formatting Audits
         run: npm run lint
 
-      - name: Verify TypeScript Compilation Integrity
+      - name: Generate Svelte/SvelteKit Ambient Types
         run: npm run prepare
 
       - name: Verify TypeScript Compilation Integrity
         run: npm run check
 
+      - name: Cache Playwright Browser Engines
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
       - name: Install Playwright Browser Engines
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
       - name: Execute Functional Unit Testing Suite
         run: npm run test:unit
 
-      - name: Compile Production Build & Verify Size Budgets
+      - name: Compile Production Build
         run: npm run build
 
       - name: Verify Bundle Size Budgets & Performance Metrics
         run: npm run size
 
-      - name: Execute E2E Integration & Automated Accessibility Scans
+  # E2E + visual regression run inside the Playwright container so rendering
+  # matches the committed Linux baseline exactly. Bare runners ship different
+  # system fonts, which changes layout height and breaks the screenshot
+  # dimension check (the baseline is generated in this same image).
+  e2e:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.0-noble
+    env:
+      PRIVATE_JWT_SECRET: 'ci_runtime_placeholder_value'
+      DATABASE_PROVIDER: 'memory'
+      PUBLIC_DEBUG: 'false'
+      SV_KIT_PF_REDIS_VERCEL_REDIS_URL: ''
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Install Exact Dependencies
+        run: npm ci
+
+      - name: Execute E2E Integration, A11y & Visual Regression
         run: npm run test:e2e
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: verify-and-audit
+    env:
+      PRIVATE_JWT_SECRET: 'ci_runtime_placeholder_value'
+      DATABASE_PROVIDER: 'memory'
+      PUBLIC_DEBUG: 'false'
+      SV_KIT_PF_REDIS_VERCEL_REDIS_URL: ''
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Initialize Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'npm'
+
+      - name: Install Exact Dependencies
+        run: npm ci
+
+      - name: Compile Production Build
+        run: npm run build
+
+      - name: Enforce Performance, A11y, SEO & Best-Practices Budgets
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          configPath: ./lighthouserc.json
