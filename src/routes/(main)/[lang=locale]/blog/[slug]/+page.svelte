@@ -30,6 +30,7 @@
 	basePath={`/blog/${post.slug}`}
 	{locale}
 	type="article"
+	image={`/og/blog/${post.slug}`}
 	jsonLd={structuredData}
 />
 

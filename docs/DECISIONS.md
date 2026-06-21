@@ -93,8 +93,10 @@ The blog list uses `IntersectionObserver`-driven load-more that navigates to
 - **ISR/SSG for posts:** posts are ideal for ISR/on-demand revalidation. Kept on edge
   SSR for now to avoid coupling prerender to the redirect-based routing under a 7-day
   budget. First thing I'd add next.
-- **Lighthouse on the dashboard:** budgets are enforced on public routes only; the
-  dashboard needs an authenticated LHCI run (session cookie injection).
+- **Lighthouse on the dashboard:** budgets are enforced on the public routes; the
+  dashboard would need an authenticated LHCI run (session-cookie injection). INP is
+  also not asserted — Lighthouse's lab run can't measure it (TBT is its proxy), so
+  INP is covered by RUM in the field rather than the CI gate.
 - **Visual baselines:** both `landing-hero-win32.png` (local dev) and
   `landing-hero-linux.png` (CI) are committed; tolerance (`maxDiffPixelRatio: 0.05`)
   absorbs sub-pixel AA differences. The Linux baseline is generated in the matching
@@ -104,5 +106,19 @@ mcr.microsoft.com/playwright:v1.61.0-noble bash -lc
 "npm ci && npx playwright test -g visual --update-snapshots"`.
   (`playwright.config` binds preview to `127.0.0.1` so Playwright's IPv4 port probe
   detects vite's server, which otherwise binds IPv6-only on some runners.)
-- **Dynamic OG images:** static OG tags are emitted; per-post generated images
-  (satori/edge) are not done yet.
+
+## Components
+
+- **Primitives** (`src/lib/components/primitives/`): Button, Badge, Card, Input,
+  Select, Container, Heading — token-driven, reused across login, search, blog and
+  dashboard. Toast is a store + `Toaster`.
+- **Composite:** `Dialog` is a from-scratch accessible modal (native `<dialog>`
+  focus trap, ESC + backdrop dismissal, labelled header); used for dashboard row
+  details and covered by a Vitest browser test.
+
+## Open Graph images
+
+Per-post OG images are generated on demand at `/og/blog/[slug]` (Node runtime):
+`satori` renders an HTML template to SVG, `@resvg/resvg-js` rasterizes it to a
+1200×630 PNG, cached via `s-maxage`. The font is read from a bundled `@fontsource`
+woff via `$app/server`'s `read()`. `<Seo>` points `og:image`/`twitter:image` at it.

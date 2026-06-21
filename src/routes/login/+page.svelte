@@ -3,6 +3,7 @@
 	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/primitives/Button.svelte';
+	import Input from '$lib/components/primitives/Input.svelte';
 	import { createTranslator, DEFAULT_LOCALE } from '$lib/i18n';
 
 	let { form }: { form: ActionData } = $props();
@@ -29,13 +30,7 @@
 		>
 			<label class="flex flex-col gap-1.5">
 				<span class="text-main text-sm font-semibold">{t('login.email')}</span>
-				<input
-					type="email"
-					name="email"
-					required
-					autocomplete="email"
-					class="border-muted bg-canvas text-main focus-visible:ring-primary rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-hidden"
-				/>
+				<Input type="email" name="email" required autocomplete="email" />
 			</label>
 			{#if form?.errors?.email}
 				<span class="text-sm text-red-600 dark:text-red-400">{form.errors.email[0]}</span>
@@ -43,13 +38,7 @@
 
 			<label class="flex flex-col gap-1.5">
 				<span class="text-main text-sm font-semibold">{t('login.password')}</span>
-				<input
-					type="password"
-					name="password"
-					required
-					autocomplete="current-password"
-					class="border-muted bg-canvas text-main focus-visible:ring-primary rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-hidden"
-				/>
+				<Input type="password" name="password" required autocomplete="current-password" />
 			</label>
 			{#if form?.errors?.password}
 				<span class="text-sm text-red-600 dark:text-red-400">{form.errors.password[0]}</span>

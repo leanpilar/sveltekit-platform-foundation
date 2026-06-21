@@ -5,7 +5,8 @@
 		isOpen: boolean;
 		onClose: () => void;
 		title: string;
-		trigger: Snippet;
+		/** Optional inline trigger; omit when the dialog is controlled by external state. */
+		trigger?: Snippet;
 		content: Snippet;
 	}
 
@@ -43,7 +44,7 @@
 	}
 </script>
 
-{@render trigger()}
+{#if trigger}{@render trigger()}{/if}
 
 <dialog
 	bind:this={dialogRef}

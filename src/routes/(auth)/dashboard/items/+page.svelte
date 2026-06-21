@@ -5,7 +5,11 @@
 	import type { SubmitFunction } from '@sveltejs/kit';
 	import Button from '$lib/components/primitives/Button.svelte';
 	import Badge from '$lib/components/primitives/Badge.svelte';
+	import Card from '$lib/components/primitives/Card.svelte';
+	import Input from '$lib/components/primitives/Input.svelte';
+	import Select from '$lib/components/primitives/Select.svelte';
 	import Toaster from '$lib/components/Toaster.svelte';
+	import Dialog from '$lib/components/Dialog.svelte';
 	import { pushToast } from '$lib/stores/toasts.svelte';
 	import { editBudgetSchema } from '$lib/dashboard/itemEdit';
 	import { buildItemsQueryString, PAGE_SIZES } from '$lib/dashboard/itemsUrl';
@@ -39,6 +43,7 @@
 	const currency2 = new Intl.NumberFormat('en', { style: 'currency', currency: 'EUR' });
 	const percent = new Intl.NumberFormat('en', { style: 'percent', minimumFractionDigits: 2 });
 	const dateFmt = new Intl.DateTimeFormat('en', { dateStyle: 'medium' });
+	const numberFmt = new Intl.NumberFormat('en');
 
 	// --- optimistic edit state (overlay over the streamed rows) ---
 	let budgetOverrides = $state<Record<string, number>>({});
@@ -96,6 +101,15 @@
 	}
 	function cancelEdit(): void {
 		editingId = null;
+	}
+
+	// Row details composite (accessible <dialog> with focus trap + dismissal).
+	let detailsItem = $state<Item | null>(null);
+	function openDetails(item: Item): void {
+		detailsItem = item;
+	}
+	function closeDetails(): void {
+		detailsItem = null;
 	}
 
 	function focusOnMount(node: HTMLInputElement): void {
@@ -171,17 +185,16 @@
 	</header>
 
 	<!-- Controls: all state round-trips through the URL -->
-	<div class="border-muted bg-surface mb-4 flex flex-col gap-4 rounded-lg border p-4">
+	<Card class="mb-4">
 		<div class="flex flex-wrap items-end gap-4">
 			<div class="flex min-w-55 flex-col gap-1">
 				<label for="item-search" class="text-muted text-xs font-semibold uppercase">Search</label>
-				<input
+				<Input
 					id="item-search"
 					type="search"
 					value={searchValue}
 					oninput={(e) => onSearchInput(e.currentTarget.value)}
 					placeholder="Filter by name…"
-					class="border-muted bg-canvas focus-visible:ring-primary rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-hidden"
 				/>
 			</div>
 
@@ -219,19 +232,18 @@
 
 			<div class="ml-auto flex flex-col gap-1">
 				<label for="page-size" class="text-muted text-xs font-semibold uppercase">Per page</label>
-				<select
+				<Select
 					id="page-size"
 					value={data.query.pageSize}
 					onchange={(e) => apply({ pageSize: Number(e.currentTarget.value) })}
-					class="border-muted bg-canvas focus-visible:ring-primary rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-hidden"
 				>
 					{#each PAGE_SIZES as size (size)}
 						<option value={size}>{size}</option>
 					{/each}
-				</select>
+				</Select>
 			</div>
 		</div>
-	</div>
+	</Card>
 
 	<!-- Streamed rows: skeleton renders immediately, data fills in -->
 	<div class="border-muted overflow-x-auto rounded-lg border">
@@ -298,7 +310,15 @@
 					{:else}
 						{#each result.rows as item (item.id)}
 							<tr class="border-muted hover:bg-surface border-b transition-colors last:border-0">
-								<td class="text-main px-3 py-2 font-medium">{item.name}</td>
+								<td class="px-3 py-2 font-medium">
+									<button
+										type="button"
+										onclick={() => openDetails(item)}
+										class="text-main hover:text-primary focus-visible:ring-primary rounded text-left focus-visible:ring-2 focus-visible:outline-hidden"
+									>
+										{item.name}
+									</button>
+								</td>
 								<td class="px-3 py-2"><Badge status={item.status} /></td>
 								<td class="px-3 py-2 capitalize">{item.channel}</td>
 								<td class="px-3 py-2">{item.owner.name}</td>
@@ -396,3 +416,33 @@
 		</nav>
 	{/await}
 </section>
+
+{#if detailsItem}
+	{@const item = detailsItem}
+	<Dialog isOpen={true} onClose={closeDetails} title={item.name}>
+		{#snippet content()}
+			<dl class="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
+				<dt class="text-muted">Status</dt>
+				<dd><Badge status={item.status} /></dd>
+				<dt class="text-muted">Channel</dt>
+				<dd class="text-main capitalize">{item.channel}</dd>
+				<dt class="text-muted">Owner</dt>
+				<dd class="text-main">{item.owner.name}</dd>
+				<dt class="text-muted">Budget</dt>
+				<dd class="text-main tabular-nums">{currency2.format(displayBudget(item))}</dd>
+				<dt class="text-muted">Spent</dt>
+				<dd class="text-main tabular-nums">{currency2.format(item.spent)}</dd>
+				<dt class="text-muted">Impressions</dt>
+				<dd class="text-main tabular-nums">{numberFmt.format(item.impressions)}</dd>
+				<dt class="text-muted">Clicks</dt>
+				<dd class="text-main tabular-nums">{numberFmt.format(item.clicks)}</dd>
+				<dt class="text-muted">CTR</dt>
+				<dd class="text-main tabular-nums">{percent.format(item.ctr)}</dd>
+				<dt class="text-muted">Flight</dt>
+				<dd class="text-main">{item.startDate} → {item.endDate}</dd>
+				<dt class="text-muted">Updated</dt>
+				<dd class="text-main">{dateFmt.format(new Date(item.updatedAt))}</dd>
+			</dl>
+		{/snippet}
+	</Dialog>
+{/if}
