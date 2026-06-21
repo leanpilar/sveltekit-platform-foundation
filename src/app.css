@@ -1,5 +1,68 @@
 @import 'tailwindcss';
 
+:root {
+	--color-canvas: #ffffff;
+	--color-surface: #f8fafc;
+	--color-main: #0f172a;
+	--color-secondary: #3f6212;
+	--color-muted: #475569;
+	--color-muted-accent: #e2e8f0;
+	--brand-primary: #1d4ed8;
+	color-scheme: light;
+}
+
+/* 2. Automatic System-Level Dark Theme Baseline */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--color-canvas: #0f172a;
+		--color-surface: #1e293b;
+		--color-main: #f8fafc;
+		--color-secondary: #d2faac;
+		--color-muted: #ffffff;
+		--color-muted-accent: #303d51;
+		--brand-primary: #60a5fa;
+		color-scheme: dark;
+	}
+}
+
+/* 3. Explicit User-Toggle Overrides (Guarantees JS Toggles Win) */
+[data-theme='light'] {
+	--color-canvas: #ffffff;
+	--color-surface: #f8fafc;
+	--color-main: #0f172a;
+	--color-secondary: #3f6212;
+	--color-muted: #475569;
+	--color-muted-accent: #e2e8f0;
+	--brand-primary: #1d4ed8;
+	color-scheme: light;
+}
+
+[data-theme='dark'] {
+	--color-canvas: #0f172a;
+	--color-surface: #1e293b;
+	--color-main: #f8fafc;
+	--color-secondary: #d2faac;
+	--color-muted: #ffffff;
+	--color-muted-accent: #303d51;
+	--brand-primary: #60a5fa;
+	color-scheme: dark;
+}
+
 @theme {
-	/* placeholder */
+	--color-primary: var(--brand-primary);
+	--color-secondary: var(--color-secondary);
+	--color-canvas: var(--color-canvas);
+	--color-surface: var(--color-surface);
+	--color-main: var(--color-main);
+	--color-muted: var(--color-muted);
+	--color-muted-accent: var(--color-muted-accent);
+}
+
+html {
+	container-name: root-theme;
+	container-type: normal;
+	@apply bg-canvas;
+}
+.container {
+	@apply mx-auto max-w-3xl px-4 sm:px-6 lg:px-8;
 }

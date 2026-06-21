@@ -1,4 +1,7 @@
 import { defineConfig } from '@playwright/test';
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(process.cwd(), '.env.develop') });
 
 const isDevMode = process.env.PLAYWRIGHT_DEV === 'true';
 const currentPort = isDevMode ? 5173 : 4173;
