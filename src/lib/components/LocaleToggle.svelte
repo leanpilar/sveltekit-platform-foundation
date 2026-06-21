@@ -33,7 +33,7 @@
 	data-sveltekit-reload
 	hreflang={targetLocale}
 	aria-label="Switch language to {targetLocale === 'de' ? 'German' : 'English'}"
-	class="rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[--brand-primary] text-[--text-muted] hover:text-[--text-main]"
+	class="rounded-md px-3 py-2 text-sm font-semibold uppercase tracking-wider transition-colors duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary text-muted hover:text-main"
 >
 	{targetLocale}
 </a>

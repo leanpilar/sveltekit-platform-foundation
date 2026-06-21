@@ -1,4 +1,4 @@
-import { onLCP, onINP, onCLS, onTTFB, type Metric } from 'web-vitals';
+import type { Metric } from 'web-vitals';
 
 interface RumConfig {
 	sampleRate: number;
@@ -12,7 +12,7 @@ interface RumConfig {
  * deterministic per-client sampling. Metrics and errors are shipped to the
  * beacon endpoint via navigator.sendBeacon (with a keepalive fetch fallback).
  */
-export function initRum(config: RumConfig): void {
+export async function initRum(config: RumConfig): Promise<void> {
 	if (typeof window === 'undefined') return;
 
 	const beaconUrl = config.beaconUrl ?? '/api/rum';
@@ -64,12 +64,7 @@ export function initRum(config: RumConfig): void {
 		}
 	};
 
-	onLCP(reportMetric);
-	onINP(reportMetric);
-	onCLS(reportMetric);
-	onTTFB(reportMetric);
-
-	// Client-side error reporting to the same beacon (Sentry-stub equivalent).
+	// Error reporting needs no extra deps — attach it immediately.
 	window.addEventListener('error', (event) => {
 		send({
 			kind: 'error',
@@ -83,4 +78,12 @@ export function initRum(config: RumConfig): void {
 	window.addEventListener('unhandledrejection', (event) => {
 		send({ kind: 'unhandledrejection', reason: String(event.reason) });
 	});
+
+	// Lazy-load web-vitals so it stays out of the initial route bundle (less JS to
+	// parse on the critical path); it only loads for sampled sessions.
+	const { onLCP, onINP, onCLS, onTTFB } = await import('web-vitals');
+	onLCP(reportMetric);
+	onINP(reportMetric);
+	onCLS(reportMetric);
+	onTTFB(reportMetric);
 }

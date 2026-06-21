@@ -34,7 +34,7 @@
 	type="button"
 	onclick={toggleTheme}
 	aria-label={currentTheme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-	class="rounded-md cursor-pointer p-2 text-[--text-muted] hover:text-[--text-main] transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[--brand-primary]"
+	class="rounded-md cursor-pointer p-2 text-muted hover:text-main transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
 >
 	{#if currentTheme === 'dark'}
 		<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">

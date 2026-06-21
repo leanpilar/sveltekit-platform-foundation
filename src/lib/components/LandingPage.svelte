@@ -99,59 +99,54 @@
 	);
 </script>
 
-<div class="bg-[--bg-canvas] text-[--text-main] transition-colors duration-200">
+<div class="bg-canvas text-main transition-colors duration-200">
 	<section class="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 text-center" aria-label="Hero">
-		<h1 class="text-5xl font-extrabold tracking-tight sm:text-6xl text-[--text-main]">
+		<h1 class="text-5xl font-extrabold tracking-tight sm:text-6xl text-main">
 			{tr('home.hero.title')}
 		</h1>
-		<p class="mx-auto mt-6 max-w-2xl text-xl text-[--text-muted]">
+		<p class="mx-auto mt-6 max-w-2xl text-xl text-muted">
 			{tr('home.hero.subtitle')}
 		</p>
 		<div class="mt-10">
 			<button
 				type="button"
-				class="rounded-md bg-[--brand-primary] px-6 py-3 text-base font-medium text-[--bg-canvas] hover:opacity-90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[--brand-primary] focus-visible:ring-offset-2"
+				class="rounded-md bg-primary px-6 py-3 text-base font-medium text-canvas hover:opacity-90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
 			>
 				{tr('home.hero.cta')}
 			</button>
 		</div>
 	</section>
 
-	<section
-		class="border-t border-[--border-muted] bg-[--bg-surface] py-20"
-		aria-labelledby="features-heading"
-	>
+	<section class="border-t border-muted bg-surface py-20" aria-labelledby="features-heading">
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<h2 id="features-heading" class="text-center text-3xl font-bold tracking-tight">
 				{tr('home.features.title')}
 			</h2>
 			<div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{#each t.features.items as item (item.title)}
-					<article class="rounded-lg border border-[--border-muted] bg-[--bg-canvas] p-6 shadow-xs">
-						<h3 class="text-lg font-semibold text-[--text-main]">{item.title}</h3>
-						<p class="mt-2 text-sm text-[--text-muted]">{item.desc}</p>
+					<article class="rounded-lg border border-muted bg-canvas p-6 shadow-xs">
+						<h3 class="text-lg font-semibold text-main">{item.title}</h3>
+						<p class="mt-2 text-sm text-muted">{item.desc}</p>
 					</article>
 				{/each}
 			</div>
 		</div>
 	</section>
 
-	<section class="border-t border-[--border-muted] py-20" aria-labelledby="pricing-heading">
+	<section class="border-t border-muted py-20" aria-labelledby="pricing-heading">
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
 			<h2 id="pricing-heading" class="text-3xl font-bold tracking-tight">{t.pricing.title}</h2>
-			<div
-				class="mx-auto mt-12 max-w-md rounded-lg border border-[--border-muted] bg-[--bg-surface] p-8 shadow-sm"
-			>
-				<h3 class="text-xl font-bold uppercase tracking-wider text-[--brand-primary]">
+			<div class="mx-auto mt-12 max-w-md rounded-lg border border-muted bg-surface p-8 shadow-sm">
+				<h3 class="text-xl font-bold uppercase tracking-wider text-primary">
 					{t.pricing.tier}
 				</h3>
 				<p class="mt-4 flex items-baseline justify-center text-5xl font-extrabold">
 					{currencyFormatter.format(t.pricing.price)}
-					<span class="ml-1 text-xl font-normal text-[--text-muted]">/{t.pricing.per}</span>
+					<span class="ml-1 text-xl font-normal text-muted">/{t.pricing.per}</span>
 				</p>
 				<button
 					type="button"
-					class="mt-8 w-full rounded-md bg-[--brand-primary] py-3 text-sm font-semibold text-[--bg-canvas] hover:opacity-90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[--brand-primary]"
+					class="mt-8 w-full rounded-md bg-primary py-3 text-sm font-semibold text-canvas hover:opacity-90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
 				>
 					{t.pricing.cta}
 				</button>
@@ -159,23 +154,18 @@
 		</div>
 	</section>
 
-	<section
-		class="border-t border-[--border-muted] bg-[--bg-surface] py-20"
-		aria-labelledby="social-heading"
-	>
+	<section class="border-t border-muted bg-surface py-20" aria-labelledby="social-heading">
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<h2 id="social-heading" class="text-center text-3xl font-bold tracking-tight">
 				{t.social.title}
 			</h2>
 			<div class="mt-12 grid grid-cols-1 gap-8 max-w-3xl mx-auto">
 				{#each t.social.items as item (item.quote)}
-					<figure
-						class="rounded-xl border border-[--border-muted] bg-[--bg-canvas] p-8 text-center italic shadow-xs"
-					>
-						<blockquote class="text-lg text-[--text-main]">
+					<figure class="rounded-xl border border-muted bg-canvas p-8 text-center italic shadow-xs">
+						<blockquote class="text-lg text-main">
 							<p>“{item.quote}”</p>
 						</blockquote>
-						<figcaption class="mt-4 text-sm font-semibold not-italic text-[--brand-primary]">
+						<figcaption class="mt-4 text-sm font-semibold not-italic text-primary">
 							— {item.author}
 						</figcaption>
 					</figure>

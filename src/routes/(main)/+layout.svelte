@@ -9,7 +9,7 @@
 	let { children, data } = $props();
 	let locale = $derived(data.locale);
 	onMount(() => {
-		initRum({
+		void initRum({
 			sampleRate: dev ? 1 : 0.1,
 			locale
 		});
