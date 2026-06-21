@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { createSessionToken, verifySessionToken } from '$lib/server/auth';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
-import { getAll } from '$lib/server/data-model';
+import { getAll } from '$lib';
 
 const loginSchema = z.object({
 	email: z.string().email(),

@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { getAll } from '$lib/server/data-model';
+import { getAll } from '$lib';
 import type { BlogPost } from '$lib/server/dto';
 import { error } from '@sveltejs/kit';
 
