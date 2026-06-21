@@ -61,6 +61,33 @@ The blog list uses `IntersectionObserver`-driven load-more that navigates to
 - RUM: `web-vitals` (LCP/INP/CLS/TTFB) + client error/unhandledrejection are sampled
   per client and shipped to `/api/rum` via `navigator.sendBeacon`.
 
+## Dashboard (authenticated surface)
+
+- **Auth:** `(auth)/+layout.server.ts` guards the whole group on Node — missing/invalid
+  session cookie → redirect to `/login`. Session is a real HttpOnly JWT cookie
+  (`createSessionToken`/`verifySessionToken`); `/logout` clears it.
+- **Pagination:** server-side classic pagination (page numbers + per-page select),
+  not infinite scroll. A dense data table benefits from stable pages, total counts
+  and jump-to-page; the opposite call from the blog, and deliberately so.
+- **URL as state:** search, multi-facet `status[]`/`channel[]`, sort column/dir, page
+  and page size all round-trip through the URL (`itemsUrl.ts`), so any table view is
+  shareable and back/forward works. Filtering resets to page 1.
+- **Streamed SSR:** `load` returns query metadata synchronously and streams the heavy
+  `rows` promise (skeleton → table). A `summary` aggregate streams **separately** so
+  it can fail on its own — the table stays usable while the summary shows a degraded
+  notice (partial-failure state). `?failSummary=1` forces that path for demos/tests.
+- **Optimistic edit + rollback:** inline `budget` edit applies immediately via an
+  overlay map, then reconciles with the server action. On failure it rolls back and
+  toasts; crucially it does **not** call `update()` on an error result (that would
+  render the `+error` boundary and tear down the table). `editBudgetSchema` is the
+  single source of truth, imported by both the client form and the server action.
+- **Targeted invalidation:** the loader declares `depends('dashboard:items')`; filter/
+  sort/paginate navigations re-run only this loader (URL-driven), not the whole tree.
+- **State:** Svelte 5 runes throughout; optimistic edits use an id-keyed overlay
+  (`budgetOverrides`/`pending`) rather than mutating the streamed rows.
+- **Pure, tested core:** `queryItems` (filter/sort/paginate) and the URL codec are
+  side-effect-free and unit-tested; the e2e covers login → optimistic edit → rollback.
+
 ## Known cuts / follow-ups
 
 - **ISR/SSG for posts:** posts are ideal for ISR/on-demand revalidation. Kept on edge
