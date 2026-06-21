@@ -3,6 +3,8 @@
 	import { goto } from '$app/navigation';
 	import type { ResolvedPathname } from '$app/types';
 	import SearchFilters from '$lib/components/SearchFilters.svelte';
+	import Seo from '$lib/seo/Seo.svelte';
+	import { toLocale } from '$lib/i18n';
 	import { parseSearchURL, serializeSearchURL } from '$lib/utils/searchCodec';
 
 	interface SimplifiedPost {
@@ -22,7 +24,7 @@
 
 	let { data }: Props = $props();
 
-	let currentLocale = $derived(page.params.lang === 'de' ? 'de' : 'en');
+	let currentLocale = $derived(toLocale(page.params.lang));
 	let searchState = $derived(parseSearchURL(page.url));
 	let allTags = $derived([...new Set(data.posts.flatMap((post) => post.tags))]);
 
@@ -60,7 +62,17 @@
 	}
 </script>
 
-<main class="bg-[--bg-canvas] text-[--text-main] min-h-screen py-12 transition-colors duration-200">
+<Seo
+	title={currentLocale === 'de' ? 'Suche – Blog' : 'Search – Blog'}
+	description={currentLocale === 'de'
+		? 'Durchsuche alle Blogbeiträge nach Stichwort, Tag und Datum.'
+		: 'Search all blog posts by keyword, tag and date.'}
+	basePath="/search"
+	locale={currentLocale}
+	noindex={Boolean(searchState.q || searchState.tag)}
+/>
+
+<div class="bg-canvas text-main min-h-screen py-12 transition-colors duration-200">
 	<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 		<header class="border-b border-[--border-muted] pb-8 mb-8">
 			<h1 class="text-4xl font-extrabold tracking-tight">
@@ -115,4 +127,4 @@
 			{/if}
 		</div>
 	</div>
-</main>
+</div>

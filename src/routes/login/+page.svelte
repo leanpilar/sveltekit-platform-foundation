@@ -4,6 +4,11 @@
 	let { form }: { form: ActionData } = $props();
 </script>
 
+<svelte:head>
+	<title>Sign in · SvelteKit Platform Foundation</title>
+	<meta name="robots" content="noindex" />
+</svelte:head>
+
 <form method="POST" action="?/login" class="auth-form" use:enhance>
 	<label>
 		<span>Email</span>

@@ -3,14 +3,19 @@ import { onLCP, onINP, onCLS, onTTFB, type Metric } from 'web-vitals';
 interface RumConfig {
 	sampleRate: number;
 	locale: string;
+	/** Endpoint that receives web-vitals and error beacons. */
+	beaconUrl?: string;
 }
 
 /**
- * Initializes Core Web Vitals instrumentation with deterministic client sampling
+ * Initializes Core Web Vitals instrumentation and client error reporting with
+ * deterministic per-client sampling. Metrics and errors are shipped to the
+ * beacon endpoint via navigator.sendBeacon (with a keepalive fetch fallback).
  */
 export function initRum(config: RumConfig): void {
 	if (typeof window === 'undefined') return;
 
+	const beaconUrl = config.beaconUrl ?? '/api/rum';
 	const storageKey = 'rum_sampled';
 	let isSampled = localStorage.getItem(storageKey);
 
@@ -22,37 +27,60 @@ export function initRum(config: RumConfig): void {
 
 	if (isSampled === 'false') return;
 
-	const logMetricToConsole = (metric: Metric) => {
-		const badgeColor =
-			metric.rating === 'good'
-				? '#22c55e'
-				: metric.rating === 'needs-improvement'
-					? '#eab308'
-					: '#ef4444';
+	const send = (body: Record<string, unknown>): void => {
+		try {
+			const payload = JSON.stringify({
+				...body,
+				path: window.location.pathname,
+				locale: config.locale
+			});
 
-		console.groupCollapsed(
-			`%c[RUM]%c ${metric.name} — %c${metric.rating.toUpperCase()}%c (${metric.value.toFixed(2)}ms)`,
-			'color: #a855f7; font-weight: bold;',
-			'color: inherit; font-weight: normal;',
-			`color: ${badgeColor}; font-weight: bold;`,
-			'color: inherit; font-weight: normal;'
-		);
-
-		console.table({
-			ID: metric.id,
-			Metric: metric.name,
-			Value: metric.value,
-			Rating: metric.rating,
-			Path: window.location.pathname,
-			Locale: config.locale,
-			NavigationType: performance.getEntriesByType('navigation')[0]?.name || 'unknown'
-		});
-
-		console.groupEnd();
+			if (typeof navigator.sendBeacon === 'function') {
+				navigator.sendBeacon(beaconUrl, new Blob([payload], { type: 'application/json' }));
+			} else {
+				void fetch(beaconUrl, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: payload,
+					keepalive: true
+				});
+			}
+		} catch {
+			// Never let observability break the page.
+		}
 	};
 
-	onLCP(logMetricToConsole);
-	onINP(logMetricToConsole);
-	onCLS(logMetricToConsole);
-	onTTFB(logMetricToConsole);
+	const reportMetric = (metric: Metric): void => {
+		send({
+			kind: 'web-vital',
+			name: metric.name,
+			value: metric.value,
+			rating: metric.rating,
+			id: metric.id
+		});
+
+		if (import.meta.env.DEV) {
+			console.debug(`[RUM] ${metric.name} ${metric.value.toFixed(2)} (${metric.rating})`);
+		}
+	};
+
+	onLCP(reportMetric);
+	onINP(reportMetric);
+	onCLS(reportMetric);
+	onTTFB(reportMetric);
+
+	// Client-side error reporting to the same beacon (Sentry-stub equivalent).
+	window.addEventListener('error', (event) => {
+		send({
+			kind: 'error',
+			message: event.message,
+			source: event.filename,
+			line: event.lineno,
+			column: event.colno
+		});
+	});
+
+	window.addEventListener('unhandledrejection', (event) => {
+		send({ kind: 'unhandledrejection', reason: String(event.reason) });
+	});
 }
