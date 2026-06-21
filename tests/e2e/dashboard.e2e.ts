@@ -5,7 +5,7 @@ async function login(page: Page): Promise<void> {
 	await page.goto('/login');
 	await page.getByLabel('Email').fill('admin@demo.test');
 	await page.getByLabel('Password').fill('demo1234');
-	await page.getByRole('button', { name: 'Log In' }).click();
+	await page.getByRole('button', { name: 'Sign in' }).click();
 	await page.waitForURL(/\/dashboard/);
 }
 

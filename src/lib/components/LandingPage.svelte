@@ -1,9 +1,12 @@
 <script lang="ts">
+	import { createTranslator } from '$lib/i18n';
+
 	interface Props {
 		locale: 'en' | 'de';
 	}
 
 	let { locale }: Props = $props();
+	let tr = $derived(createTranslator(locale));
 
 	const content = {
 		en: {
@@ -99,17 +102,17 @@
 <div class="bg-[--bg-canvas] text-[--text-main] transition-colors duration-200">
 	<section class="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 text-center" aria-label="Hero">
 		<h1 class="text-5xl font-extrabold tracking-tight sm:text-6xl text-[--text-main]">
-			{t.hero.title}
+			{tr('home.hero.title')}
 		</h1>
 		<p class="mx-auto mt-6 max-w-2xl text-xl text-[--text-muted]">
-			{t.hero.sub}
+			{tr('home.hero.subtitle')}
 		</p>
 		<div class="mt-10">
 			<button
 				type="button"
 				class="rounded-md bg-[--brand-primary] px-6 py-3 text-base font-medium text-[--bg-canvas] hover:opacity-90 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[--brand-primary] focus-visible:ring-offset-2"
 			>
-				{t.hero.cta}
+				{tr('home.hero.cta')}
 			</button>
 		</div>
 	</section>
@@ -120,7 +123,7 @@
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 			<h2 id="features-heading" class="text-center text-3xl font-bold tracking-tight">
-				{t.features.title}
+				{tr('home.features.title')}
 			</h2>
 			<div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
 				{#each t.features.items as item (item.title)}

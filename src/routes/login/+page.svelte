@@ -3,8 +3,10 @@
 	import type { ActionData } from './$types';
 	import { enhance } from '$app/forms';
 	import Button from '$lib/components/primitives/Button.svelte';
+	import { createTranslator, DEFAULT_LOCALE } from '$lib/i18n';
 
 	let { form }: { form: ActionData } = $props();
+	const t = createTranslator(DEFAULT_LOCALE);
 </script>
 
 <svelte:head>
@@ -15,7 +17,7 @@
 <main class="bg-canvas text-main flex min-h-screen items-center justify-center px-4 py-12">
 	<div class="w-full max-w-sm">
 		<div class="mb-6 text-center">
-			<h1 class="text-2xl font-extrabold tracking-tight">Sign in</h1>
+			<h1 class="text-2xl font-extrabold tracking-tight">{t('login.title')}</h1>
 			<p class="text-muted mt-1 text-sm">Access the campaigns dashboard.</p>
 		</div>
 
@@ -26,7 +28,7 @@
 			class="border-muted bg-surface flex flex-col gap-4 rounded-xl border p-6 shadow-sm"
 		>
 			<label class="flex flex-col gap-1.5">
-				<span class="text-main text-sm font-semibold">Email</span>
+				<span class="text-main text-sm font-semibold">{t('login.email')}</span>
 				<input
 					type="email"
 					name="email"
@@ -40,7 +42,7 @@
 			{/if}
 
 			<label class="flex flex-col gap-1.5">
-				<span class="text-main text-sm font-semibold">Password</span>
+				<span class="text-main text-sm font-semibold">{t('login.password')}</span>
 				<input
 					type="password"
 					name="password"
@@ -62,7 +64,7 @@
 				</div>
 			{/if}
 
-			<Button type="submit" class="mt-2 w-full">Log In</Button>
+			<Button type="submit" class="mt-2 w-full">{t('login.submit')}</Button>
 		</form>
 	</div>
 </main>

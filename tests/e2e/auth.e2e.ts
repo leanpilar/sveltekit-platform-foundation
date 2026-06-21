@@ -10,7 +10,7 @@ test.describe('Authentication Flow', () => {
 
 		await page.getByLabel('Email').fill('admin@demo.test');
 		await page.getByLabel('Password').fill('demo1234');
-		await page.getByRole('button', { name: 'Log In' }).click();
+		await page.getByRole('button', { name: 'Sign in' }).click();
 
 		await expect(page).toHaveURL(/\/dashboard/);
 	});
@@ -24,7 +24,7 @@ test.describe('Authentication Flow', () => {
 
 		await page.getByLabel('Email').fill('admin@demo.test');
 		await page.getByLabel('Password').fill('wrong_password_attempt');
-		await page.getByRole('button', { name: 'Log In' }).click();
+		await page.getByRole('button', { name: 'Sign in' }).click();
 
 		await expect(page.locator('.error-banner')).toHaveText('Invalid credentials');
 		await expect(page).not.toHaveURL(/\/dashboard/);

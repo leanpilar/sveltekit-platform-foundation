@@ -4,7 +4,7 @@
 	import type { ResolvedPathname } from '$app/types';
 	import SearchFilters from '$lib/components/SearchFilters.svelte';
 	import Seo from '$lib/seo/Seo.svelte';
-	import { toLocale } from '$lib/i18n';
+	import { toLocale, createTranslator } from '$lib/i18n';
 	import { parseSearchURL, serializeSearchURL } from '$lib/utils/searchCodec';
 
 	interface SimplifiedPost {
@@ -25,6 +25,7 @@
 	let { data }: Props = $props();
 
 	let currentLocale = $derived(toLocale(page.params.lang));
+	let t = $derived(createTranslator(currentLocale));
 	let searchState = $derived(parseSearchURL(page.url));
 	let allTags = $derived([...new Set(data.posts.flatMap((post) => post.tags))]);
 
@@ -76,7 +77,7 @@
 	<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 		<header class="border-b border-[--border-muted] pb-8 mb-8">
 			<h1 class="text-4xl font-extrabold tracking-tight">
-				{currentLocale === 'de' ? 'Suche' : 'Search Blogs'}
+				{t('nav.search')}
 			</h1>
 		</header>
 
@@ -90,6 +91,11 @@
 		/>
 
 		<div role="region" aria-live="polite" aria-label="Search Results">
+			{#if searchState.q}
+				<p class="text-muted mb-4 text-sm">
+					{t('search.results', { count: filteredAndSortedPosts.length, query: searchState.q })}
+				</p>
+			{/if}
 			{#if filteredAndSortedPosts.length > 0}
 				<ul role="list" class="divide-y divide-[--border-muted]">
 					{#each filteredAndSortedPosts as post (post.id)}
@@ -118,11 +124,7 @@
 				</ul>
 			{:else}
 				<div class="text-center py-12 border border-dashed border-[--border-muted] rounded-lg">
-					<p class="text-muted">
-						{currentLocale === 'de'
-							? 'Keine Ergebnisse gefunden.'
-							: 'No items matched your filtering options.'}
-					</p>
+					<p class="text-muted">{t('search.noResults')}</p>
 				</div>
 			{/if}
 		</div>

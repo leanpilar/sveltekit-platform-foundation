@@ -1,8 +1,10 @@
 <script lang="ts">
 	import './dashboard.css';
 	import type { ResolvedPathname } from '$app/types';
+	import { createTranslator, DEFAULT_LOCALE } from '$lib/i18n';
 
 	let { children, data } = $props();
+	const t = createTranslator(DEFAULT_LOCALE);
 </script>
 
 <div class="bg-canvas text-main min-h-screen">
@@ -26,7 +28,7 @@
 						type="submit"
 						class="border-muted text-main hover:bg-canvas focus-visible:ring-primary rounded-md border px-3 py-1.5 text-sm font-semibold focus-visible:ring-2 focus-visible:outline-hidden"
 					>
-						Sign out
+						{t('nav.logout')}
 					</button>
 				</form>
 			</div>

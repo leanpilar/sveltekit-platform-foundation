@@ -1,7 +1,10 @@
 <script>
+	import { createTranslator, toLocale } from '$lib/i18n';
+
 	let { locale, post } = $props();
 	let currentLocale = $derived(locale);
 	let dateFormatter = $derived(new Intl.DateTimeFormat(currentLocale, { dateStyle: 'long' }));
+	let t = $derived(createTranslator(toLocale(currentLocale)));
 </script>
 
 <article>
@@ -33,9 +36,7 @@
 				<span class="hidden sm:inline" aria-hidden="true">•</span>
 				<time datetime={post.publishedAt}>{dateFormatter.format(new Date(post.publishedAt))}</time>
 				<span aria-hidden="true">•</span>
-				<span
-					>{post.readingTimeMinutes} {currentLocale === 'de' ? 'Min. Lesezeit' : 'min read'}</span
-				>
+				<span>{t('blog.readingTime', { minutes: post.readingTimeMinutes })}</span>
 			</div>
 		</div>
 	</header>

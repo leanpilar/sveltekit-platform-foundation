@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { createTranslator, toLocale } from '$lib/i18n';
+
 	interface Props {
 		searchQuery: string;
 		selectedTag: string;
@@ -11,6 +13,7 @@
 	}
 
 	let { searchQuery, selectedTag, currentSort, allTags, currentLocale, onchange }: Props = $props();
+	let t = $derived(createTranslator(toLocale(currentLocale)));
 </script>
 
 <section class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-10" aria-label="Filters">
@@ -23,7 +26,7 @@
 			type="search"
 			value={searchQuery}
 			oninput={(e) => onchange(new CustomEvent('change', { detail: { q: e.currentTarget.value } }))}
-			placeholder={currentLocale === 'de' ? 'Suchen...' : 'Search posts...'}
+			placeholder={t('search.placeholder')}
 			class="w-full rounded-md border border-muted bg-canvas px-4 py-2 text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
 		/>
 	</div>

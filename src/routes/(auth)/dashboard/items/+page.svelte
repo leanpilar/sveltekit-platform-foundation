@@ -11,20 +11,24 @@
 	import { buildItemsQueryString, PAGE_SIZES } from '$lib/dashboard/itemsUrl';
 	import type { ItemsQuery, SortColumn } from '$lib/dashboard/itemsQuery';
 	import type { Item } from '$lib/server/dto';
+	import { createTranslator, DEFAULT_LOCALE } from '$lib/i18n';
 
 	let { data } = $props();
+
+	// Dashboard is not locale-routed; use the default-locale dictionary.
+	const t = createTranslator(DEFAULT_LOCALE);
 
 	const PATH = '/dashboard/items';
 
 	const COLUMNS: { key: SortColumn; label: string; numeric?: boolean }[] = [
-		{ key: 'name', label: 'Name' },
-		{ key: 'status', label: 'Status' },
-		{ key: 'channel', label: 'Channel' },
-		{ key: 'owner', label: 'Owner' },
-		{ key: 'budget', label: 'Budget', numeric: true },
-		{ key: 'spent', label: 'Spent', numeric: true },
-		{ key: 'ctr', label: 'CTR', numeric: true },
-		{ key: 'updatedAt', label: 'Updated' }
+		{ key: 'name', label: t('dashboard.items.column.name') },
+		{ key: 'status', label: t('dashboard.items.column.status') },
+		{ key: 'channel', label: t('dashboard.items.column.channel') },
+		{ key: 'owner', label: t('dashboard.items.column.owner') },
+		{ key: 'budget', label: t('dashboard.items.column.budget'), numeric: true },
+		{ key: 'spent', label: t('dashboard.items.column.spent'), numeric: true },
+		{ key: 'ctr', label: t('dashboard.items.column.ctr'), numeric: true },
+		{ key: 'updatedAt', label: t('dashboard.items.column.updated') }
 	];
 
 	const currency = new Intl.NumberFormat('en', {
@@ -149,9 +153,9 @@
 <section class="bg-canvas text-main mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 	<header class="mb-6 flex flex-wrap items-end justify-between gap-4">
 		<div>
-			<h1 class="text-2xl font-extrabold tracking-tight">Campaigns</h1>
+			<h1 class="text-2xl font-extrabold tracking-tight">{t('dashboard.items.title')}</h1>
 			{#await data.summary}
-				<p class="text-muted text-sm">Loading summary…</p>
+				<p class="text-muted text-sm">{t('common.loading')}</p>
 			{:then summary}
 				<p class="text-muted text-sm">
 					{summary.count} campaigns · {currency.format(summary.totalBudget)} budget · {currency.format(
@@ -320,9 +324,9 @@
 												aria-label={`Budget for ${item.name}`}
 												class="border-muted bg-canvas focus-visible:ring-primary w-24 rounded-md border px-2 py-1 text-right text-sm focus-visible:ring-2 focus-visible:outline-hidden"
 											/>
-											<Button type="submit" size="sm">Save</Button>
+											<Button type="submit" size="sm">{t('common.save')}</Button>
 											<Button type="button" variant="ghost" size="sm" onclick={cancelEdit}>
-												Cancel
+												{t('common.cancel')}
 											</Button>
 										</form>
 									{:else}
@@ -355,7 +359,7 @@
 							<p class="font-medium text-red-600 dark:text-red-400">Failed to load campaigns.</p>
 							<div class="mt-3">
 								<Button variant="outline" size="sm" onclick={() => invalidate('dashboard:items')}>
-									Retry
+									{t('common.retry')}
 								</Button>
 							</div>
 						</td>
