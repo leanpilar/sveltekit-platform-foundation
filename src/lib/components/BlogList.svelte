@@ -108,12 +108,12 @@
 		<noscript>
 			<a
 				href={`/${locale}/blog/page/${currentPage + 1}` as ResolvedPathname}
-				class="rounded-md bg-[--bg-surface] border border-[--border-muted] px-4 py-2 text-sm font-semibold hover:bg-[--border-muted]"
+				class="rounded-md bg-surface border border-muted px-4 py-2 text-sm font-semibold hover:bg-muted"
 			>
 				Next Page
 			</a>
 		</noscript>
 	{:else}
-		<p class="text-sm text-[--text-muted]" role="status">End of collection parsed.</p>
+		<p class="text-sm text-muted" role="status">End of collection parsed.</p>
 	{/if}
 </div>

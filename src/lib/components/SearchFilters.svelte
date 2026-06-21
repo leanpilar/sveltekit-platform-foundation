@@ -18,7 +18,7 @@
 
 <section class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-10" aria-label="Filters">
 	<div class="flex flex-col gap-2">
-		<label for="search-input" class="text-sm font-semibold text-[--text-muted]">
+		<label for="search-input" class="text-sm font-semibold text-muted">
 			{currentLocale === 'de' ? 'Stichwort' : 'Query'}
 		</label>
 		<input

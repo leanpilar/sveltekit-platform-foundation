@@ -75,7 +75,7 @@
 
 <div class="bg-canvas text-main min-h-screen py-12 transition-colors duration-200">
 	<div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-		<header class="border-b border-[--border-muted] pb-8 mb-8">
+		<header class="border-b border-muted pb-8 mb-8">
 			<h1 class="text-4xl font-extrabold tracking-tight">
 				{t('nav.search')}
 			</h1>
@@ -97,22 +97,22 @@
 				</p>
 			{/if}
 			{#if filteredAndSortedPosts.length > 0}
-				<ul role="list" class="divide-y divide-[--border-muted]">
+				<ul role="list" class="divide-y divide-muted">
 					{#each filteredAndSortedPosts as post (post.id)}
 						<li class="py-6">
 							<article>
-								<h2 class="text-2xl font-bold tracking-tight hover:text-[--brand-primary]">
+								<h2 class="text-2xl font-bold tracking-tight hover:text-primary">
 									<a href={`/${currentLocale}/blog/${post.slug}` as ResolvedPathname}>
 										{post.title}
 									</a>
 								</h2>
-								<p class="mt-2 text-base text-[--text-muted] line-clamp-2">
+								<p class="mt-2 text-base text-muted line-clamp-2">
 									{post.excerpt}
 								</p>
 								<div class="mt-3 flex flex-wrap gap-1">
 									{#each post.tags as tag (tag)}
 										<span
-											class="inline-flex items-center rounded-md bg-canvas px-2 py-0.5 text-xs font-medium text-[--text-muted] border border-[--border-muted]"
+											class="inline-flex items-center rounded-md bg-canvas px-2 py-0.5 text-xs font-medium text-muted border border-muted"
 										>
 											#{tag}
 										</span>
@@ -123,7 +123,7 @@
 					{/each}
 				</ul>
 			{:else}
-				<div class="text-center py-12 border border-dashed border-[--border-muted] rounded-lg">
+				<div class="text-center py-12 border border-dashed border-muted rounded-lg">
 					<p class="text-muted">{t('search.noResults')}</p>
 				</div>
 			{/if}
