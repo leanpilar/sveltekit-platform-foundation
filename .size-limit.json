@@ -1,10 +1,12 @@
 [
 	{
+		"name": "public entry (shared bootstrap, loaded on every route)",
 		"path": ".svelte-kit/output/client/_app/immutable/entry/start.*.js",
 		"limit": "80 kB",
 		"gzip": true
 	},
 	{
+		"name": "largest route chunk (dashboard ceiling)",
 		"path": ".svelte-kit/output/client/_app/immutable/chunks/*.js",
 		"limit": "150 kB",
 		"gzip": true

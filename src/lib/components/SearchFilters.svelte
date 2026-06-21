@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { createTranslator, toLocale } from '$lib/i18n';
+	import Input from '$lib/components/primitives/Input.svelte';
+	import Select from '$lib/components/primitives/Select.svelte';
 
 	interface Props {
 		searchQuery: string;
@@ -16,43 +18,43 @@
 	let t = $derived(createTranslator(toLocale(currentLocale)));
 </script>
 
-<section class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-10" aria-label="Filters">
+<section class="mb-10 grid grid-cols-1 gap-4 sm:grid-cols-3" aria-label="Filters">
 	<div class="flex flex-col gap-2">
-		<label for="search-input" class="text-sm font-semibold text-muted">
+		<label for="search-input" class="text-muted text-sm font-semibold">
 			{currentLocale === 'de' ? 'Stichwort' : 'Query'}
 		</label>
-		<input
+		<Input
 			id="search-input"
 			type="search"
 			value={searchQuery}
 			oninput={(e) => onchange(new CustomEvent('change', { detail: { q: e.currentTarget.value } }))}
 			placeholder={t('search.placeholder')}
-			class="w-full rounded-md border border-muted bg-canvas px-4 py-2 text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
 		/>
 	</div>
 
 	<div class="flex flex-col gap-2">
-		<label for="tag-select" class="text-sm font-semibold text-muted">Tag</label>
-		<select
+		<label for="tag-select" class="text-muted text-sm font-semibold">Tag</label>
+		<Select
 			id="tag-select"
+			class="w-full"
 			value={selectedTag}
 			onchange={(e) =>
 				onchange(new CustomEvent('change', { detail: { tag: e.currentTarget.value } }))}
-			class="w-full rounded-md border border-muted bg-canvas px-4 py-2 text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
 		>
 			<option value="">{currentLocale === 'de' ? 'Alle Tags' : 'All Tags'}</option>
 			{#each allTags as tag (tag)}
 				<option value={tag}>#{tag}</option>
 			{/each}
-		</select>
+		</Select>
 	</div>
 
 	<div class="flex flex-col gap-2">
-		<label for="sort-select" class="text-sm font-semibold text-muted">
+		<label for="sort-select" class="text-muted text-sm font-semibold">
 			{currentLocale === 'de' ? 'Sortierung' : 'Sort Order'}
 		</label>
-		<select
+		<Select
 			id="sort-select"
+			class="w-full"
 			value={currentSort}
 			onchange={(e) =>
 				onchange(
@@ -60,10 +62,9 @@
 						detail: { sort: e.currentTarget.value as 'latest' | 'oldest' }
 					})
 				)}
-			class="w-full rounded-md border border-muted bg-canvas px-4 py-2 text-sm focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary"
 		>
 			<option value="latest">{currentLocale === 'de' ? 'Neueste zuerst' : 'Latest'}</option>
 			<option value="oldest">{currentLocale === 'de' ? 'Älteste zuerst' : 'Oldest'}</option>
-		</select>
+		</Select>
 	</div>
 </section>

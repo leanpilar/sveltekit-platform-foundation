@@ -2,6 +2,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { z } from 'zod';
 import { createSessionToken, getAll, verifySessionToken } from '$lib';
+import { userSchema } from '$lib/server/dto';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
 
@@ -35,7 +36,8 @@ export const actions: Actions = {
 			return fail(400, { errors: result.error.flatten().fieldErrors });
 		}
 
-		const users = await getAll<{ id: string; email: string; password: string }>('users');
+		// Validate the user store at the boundary instead of trusting the JSON.
+		const users = userSchema.array().parse(await getAll('users'));
 		const user = users.find((u) => u.email === result.data.email);
 
 		if (!user || user.password !== result.data.password) {
