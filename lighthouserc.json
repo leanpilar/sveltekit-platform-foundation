@@ -9,7 +9,8 @@
 				"http://localhost:4173/en/blog",
 				"http://localhost:4173/en/blog/accessible-combobox-from-scratch"
 			],
-			"numberOfRuns": 1
+			"numberOfRuns": 3,
+			"settings": { "chromeFlags": "--no-sandbox" }
 		},
 		"assert": {
 			"assertions": {
