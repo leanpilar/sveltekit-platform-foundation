@@ -5,6 +5,7 @@ import items from '$lib/mocks/items.json';
 import posts from '$lib/mocks/posts.json';
 import tags from '$lib/mocks/tags.json';
 import users from '$lib/mocks/users.json';
+import { dev } from '$app/environment';
 
 interface MemoryClient {
 	get(key: string): Promise<string | null>;
@@ -40,7 +41,7 @@ class Client {
 		}
 
 		this.logger.log('memoryClient initialized');
-		if (process.env.CI) {
+		if (process.env.CI || dev) {
 			this.seedInitialState();
 		}
 	}
