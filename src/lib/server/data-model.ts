@@ -1,4 +1,4 @@
-import { persistance } from './db';
+import { persistence } from './db';
 
 type AllDataTypes = 'items' | 'posts' | 'tags' | 'users';
 
@@ -6,7 +6,7 @@ type AllDataTypes = 'items' | 'posts' | 'tags' | 'users';
  * Retrieves and parses a collection model array from the persistence layer
  */
 export async function getAll<T extends { id: string }>(model: AllDataTypes): Promise<T[]> {
-	const data = await persistance.get(model);
+	const data = await persistence.get(model);
 	return data ? JSON.parse(data) : [];
 }
 /**
@@ -22,6 +22,6 @@ export async function edit(
 
 	if (index !== -1) {
 		items[index] = { ...updatedItem, id };
-		await persistance.set(model, JSON.stringify(items));
+		await persistence.set(model, JSON.stringify(items));
 	}
 }

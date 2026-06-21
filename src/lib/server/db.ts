@@ -134,4 +134,4 @@ class Client {
 	}
 }
 
-export const persistance = new Client();
+export const persistence = new Client();
