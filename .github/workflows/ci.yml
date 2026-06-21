@@ -30,19 +30,27 @@ jobs:
       - name: Execute Static Linting & Formatting Audits
         run: npm run lint
 
-      - name: Verify TypeScript Compilation Integrity
+      - name: Generate Svelte/SvelteKit Ambient Types
         run: npm run prepare
 
       - name: Verify TypeScript Compilation Integrity
         run: npm run check
 
-      - name: Install Playwright Browser Engines
-        run: npx playwright install --with-deps
-
       - name: Execute Functional Unit Testing Suite
         run: npm run test:unit
 
-      - name: Compile Production Build & Verify Size Budgets
+      - name: Cache Playwright Browser Engines
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright Browser Engines
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps
+
+      - name: Compile Production Build
         run: npm run build
 
       - name: Verify Bundle Size Budgets & Performance Metrics
