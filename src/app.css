@@ -1,14 +1,13 @@
 @import 'tailwindcss';
 
-/* 1. Default Light Theme Variable Mapping */
 :root {
 	--color-canvas: #ffffff;
 	--color-surface: #f8fafc;
 	--color-main: #0f172a;
-	--color-secondary: #d2faac;
+	--color-secondary: #3f6212;
 	--color-muted: #475569;
 	--color-muted-accent: #e2e8f0;
-	--brand-primary: #3b82f6;
+	--brand-primary: #1d4ed8;
 	color-scheme: light;
 }
 
@@ -31,10 +30,10 @@
 	--color-canvas: #ffffff;
 	--color-surface: #f8fafc;
 	--color-main: #0f172a;
-	--color-secondary: #d2faac;
+	--color-secondary: #3f6212;
 	--color-muted: #475569;
 	--color-muted-accent: #e2e8f0;
-	--brand-primary: #3b82f6;
+	--brand-primary: #1d4ed8;
 	color-scheme: light;
 }
 
