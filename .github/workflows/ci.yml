@@ -83,6 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: verify-and-audit
     env:
+      PRIVATE_JWT_SECRET: 'ci_runtime_placeholder_value'
       DATABASE_PROVIDER: 'memory'
       PUBLIC_DEBUG: 'false'
       SV_KIT_PF_REDIS_VERCEL_REDIS_URL: ''
