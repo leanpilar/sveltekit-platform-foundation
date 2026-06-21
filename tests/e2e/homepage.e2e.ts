@@ -8,6 +8,6 @@ test.describe('Public Homepage Integration', () => {
 		// Assert the exact target H1 node exists and displays correctly
 		const heading = page.locator('h1');
 		await expect(heading).toBeVisible();
-		await expect(heading).toHaveText('Architect the Future of Web Apps');
+		await expect(heading).toHaveText('Build a faster web, without the fight.');
 	});
 });
