@@ -1,10 +1,9 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { dev } from '$app/environment';
 import { z } from 'zod';
-import { createSessionToken, verifySessionToken } from '$lib/server/auth';
+import { createSessionToken, getAll, verifySessionToken } from '$lib';
 import type { PageServerLoad } from './$types';
 import type { Actions } from './$types';
-import { getAll } from '$lib';
 
 const loginSchema = z.object({
 	email: z.string().email(),
