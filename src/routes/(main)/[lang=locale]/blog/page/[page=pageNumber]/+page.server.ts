@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types';
 import type { BlogPost } from '$lib/server/dto';
 
-export const load: PageServerLoad = async ({ parent, params }) => {
+export const load: PageServerLoad = async ({ parent, params, fetch }) => {
 	const posts: BlogPost[] = await fetch('/api/posts').then((res) => res.json());
 	const parentDate = await parent();
 	const currentPage = Number(params.page);
