@@ -1,8 +1,9 @@
 import type { PageServerLoad } from './$types';
+import { getAll } from '$lib';
 import type { BlogPost } from '$lib/server/dto';
 
-export const load: PageServerLoad = async ({ parent, fetch }) => {
-	const posts: BlogPost[] = await fetch('/api/posts').then((res) => res.json());
+export const load: PageServerLoad = async ({ parent }) => {
+	const posts: BlogPost[] = await getAll<BlogPost>('posts');
 	const parentDate = await parent();
 	const preparedPostsForLocale = posts
 		.map((post) => ({

@@ -1,9 +1,10 @@
 import type { PageServerLoad } from './$types';
+import { getAll } from '$lib';
 import type { BlogPost } from '$lib/server/dto';
 import { error } from '@sveltejs/kit';
 
 export const load: PageServerLoad = async ({ parent, params }) => {
-	const posts: BlogPost[] = await fetch('/api/posts').then((res) => res.json());
+	const posts: BlogPost[] = await getAll<BlogPost>('posts');
 	const parentDate = await parent();
 	const preparedPostsForLocale = posts.map((post) => ({
 		...post,

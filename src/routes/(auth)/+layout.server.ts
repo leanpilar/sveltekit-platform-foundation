@@ -1,7 +1,7 @@
 import { redirect } from '@sveltejs/kit';
 import type { Config } from '@sveltejs/adapter-vercel';
 import type { LayoutServerLoad } from './$types';
-import { verifySessionToken } from '$lib';
+import { verifySessionToken } from '$lib/server/auth';
 
 export const config: Config = {
 	runtime: 'nodejs22.x',
