@@ -19,7 +19,10 @@
 			{/each}
 		</div>
 
-		<h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-main">
+		<h1
+			class="text-3xl font-extrabold tracking-tight sm:text-4xl text-main"
+			style:view-transition-name={`post-title-${post.slug}`}
+		>
 			{post.title}
 		</h1>
 
